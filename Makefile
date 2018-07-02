@@ -29,6 +29,7 @@ sous-deploy:
 
 docker-build: tag-build
 	docker build -t docker.otenv.com/respond:$(TAG) .
+	docker push docker.otenv.com/respond:$(TAG)
 
 docker-rm:
 	-docker stop respond 2>/dev/null ; true
