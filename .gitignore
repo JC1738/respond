@@ -1,0 +1,9 @@
+*.swp
+*.swo
+.DS_Store
+*~
+main
+/src
+debug
+/.vscode
+manifest.yaml
