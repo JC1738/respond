@@ -11,7 +11,6 @@ sous-build: tag-build
 	sous build -tag $(TAG)
 
 tag-build:
-
 	@status=$$(git status --porcelain); \
 	if test "x$${status}" = x; then \
 		echo "<html><body><P>" > static/version.html; \
@@ -22,7 +21,7 @@ tag-build:
 		git tag -a $(TAG) -m "tag sous build $(TAG)"; \
 		git push origin --tags; \
 	else \
-		echo Working directory is dirty, no build will occur >&2; \
+		echo Working directory is dirty, no build will occur >&2; exit 1; \
 	fi
 
 sous-deploy:
@@ -31,8 +30,14 @@ sous-deploy:
 docker-build: tag-build
 	docker build -t docker.otenv.com/respond:$(TAG) .
 
-docker-run:
-	docker run $(DOCKER_RUN_PARAMS) -d -name respond docker.otenv.com/respond:$(TAG)
+docker-rm:
+	-docker stop respond 2>/dev/null ; true
+	-docker rm respond 2>/dev/null; true
+
+docker-run: docker-rm
+	docker run $(DOCKER_RUN_PARAMS) -d --name respond docker.otenv.com/respond:$(TAG)
+
+docker-build-run: docker-build docker-run
 
 compile-linux:
 	gox -osarch="linux/amd64" -gcflags="-a" -verbose -output="main"
