@@ -7,7 +7,10 @@ TAG ?= 10.0.0
 CLUSTER ?= dev-ci-sf
 print-%  : ; @echo $* = $($*)
 
-sous-build:
+sous-build: tag-build
+	sous build -tag $(TAG)
+
+tag-build:
 
 	@status=$$(git status --porcelain); \
 	if test "x$${status}" = x; then \
@@ -18,13 +21,15 @@ sous-build:
 		git commit -m "update version.html as part of sous-build to $(TAG)"; \
 		git tag -a $(TAG) -m "tag sous build $(TAG)"; \
 		git push origin --tags; \
-		sous build -tag $(TAG); \
 	else \
 		echo Working directory is dirty, no build will occur >&2; \
 	fi
 
 sous-deploy:
 	sous deploy -cluster $(CLUSTER) -tag $(TAG)
+
+docker-build: tag-build
+	docker build -tag docker.otenv.com/respond:$(TAG) .
 
 docker-run:
 	docker run $(DOCKER_RUN_PARAMS) -d -name respond docker.otenv.com/respond:$(TAG)
