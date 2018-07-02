@@ -4,6 +4,7 @@
 *~
 main
 /src
+/config
 debug
 /.vscode
 manifest.yaml
