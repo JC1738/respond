@@ -29,7 +29,7 @@ sous-deploy:
 	sous deploy -cluster $(CLUSTER) -tag $(TAG)
 
 docker-build: tag-build
-	docker build -tag docker.otenv.com/respond:$(TAG) .
+	docker build -t docker.otenv.com/respond:$(TAG) .
 
 docker-run:
 	docker run $(DOCKER_RUN_PARAMS) -d -name respond docker.otenv.com/respond:$(TAG)
